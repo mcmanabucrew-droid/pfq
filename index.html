@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Pixel Flappy Quest</title>
+    
+    <!-- PWA & Mobile Native Web App Settings -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="FlappyQuest" />
+
+    <!-- Google AdMob / AdSense Ads Integration -->
+    <meta name="google-adsense-account" content="ca-app-pub-1236266345379353" />
+    <meta name="admob-app-id" content="ca-app-pub-1236266345379353~7880489433" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-app-pub-1236266345379353" crossorigin="anonymous"></script>
+    <script>
+      window.ADMOB_CONFIG = {
+        appId: "ca-app-pub-1236266345379353~7880489433",
+        adUnitId: "ca-app-pub-1236266345379353/3007436707",
+        rewardAdUnitId: "ca-app-pub-1236266345379353/3007436707",
+        bannerAdUnitId: "ca-app-pub-1236266345379353/3007436707",
+        publisherId: "ca-app-pub-1236266345379353"
+      };
+    </script>
+  </head>
+  <body class="bg-slate-950 text-white select-none overscroll-none">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

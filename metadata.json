@@ -1,0 +1,6 @@
+{
+  "name": "Pixel Flappy Quest",
+  "description": "ドット絵の勇者や魔法使いをタップで操作して障害物を避けるフラッピー風スマホ冒険RPG。新装備・スキン解放、オンラインランキング機能、広告視聴リトライを搭載。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
