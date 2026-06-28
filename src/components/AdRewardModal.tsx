@@ -17,20 +17,21 @@ export const AdRewardModal: React.FC<AdRewardModalProps> = ({
   const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (watching && progress < 100) {
-      timer = setInterval(() => {
-        setProgress(p => {
-          if (p >= 100) {
-            setCompleted(true);
-            return 100;
-          }
-          return p + 25; // 4 seconds total simulated ad length
-        });
-      }, 700);
-    }
+    if (!watching || completed) return;
+
+    const timer = setInterval(() => {
+      setProgress(p => {
+        const next = p + 25;
+        if (next >= 100) {
+          setCompleted(true);
+          return 100;
+        }
+        return next;
+      });
+    }, 700);
+
     return () => clearInterval(timer);
-  }, [watching, progress]);
+  }, [watching, completed]);
 
   const handleStartAd = () => {
     setWatching(true);
@@ -73,50 +74,79 @@ export const AdRewardModal: React.FC<AdRewardModalProps> = ({
 
         {/* Ad Player Area */}
         {watching ? (
-          <div className="w-full bg-slate-950 border border-slate-800 rounded-xl p-6 mb-6 flex flex-col items-center justify-center relative min-h-[170px]">
-            <span className="absolute top-2 right-2 bg-slate-800 text-[10px] text-amber-400 px-2 py-0.5 rounded font-mono border border-amber-500/30">
-              AdMob • 連動中
-            </span>
-            <span className="absolute bottom-2 right-2 text-[9px] text-slate-500 font-mono">
-              Unit: ...3007436707
+          <div className="w-full bg-slate-950 border-2 border-amber-500/80 rounded-xl p-5 mb-6 flex flex-col items-center justify-center relative min-h-[190px] shadow-inner overflow-hidden">
+            <div className="absolute top-2.5 left-3 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 text-[10px] px-2 py-0.5 rounded font-extrabold tracking-wider shadow">
+              ▶ SPONSORED CM
+            </div>
+            <span className="absolute top-2.5 right-3 bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded font-mono border border-slate-700">
+              {completed ? "✅ 完了" : `残り ${Math.max(0, Math.ceil((100 - progress) / 25))} 秒`}
             </span>
 
             {completed ? (
-              <div className="animate-fade-in flex flex-col items-center">
-                <Award className="w-12 h-12 text-emerald-400 mb-2 animate-pulse" />
-                <span className="text-sm font-bold text-emerald-300">リワード広告の視聴が完了しました！</span>
+              <div className="animate-fade-in flex flex-col items-center py-4">
+                <Award className="w-14 h-14 text-emerald-400 mb-2 animate-bounce drop-shadow-[0_0_12px_rgba(52,211,153,0.5)]" />
+                <span className="text-base font-bold text-emerald-300">動画視聴が完了しました！</span>
+                <span className="text-xs text-slate-300 mt-1">下のボタンを押して報酬をお受け取りください</span>
               </div>
             ) : (
-              <div className="w-full flex flex-col items-center space-y-3">
-                <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs font-mono text-slate-300">スポンサー動画広告を読込中...</span>
-                
+              <div className="w-full flex flex-col items-center justify-center my-4 animate-fade-in">
+                {progress < 50 ? (
+                  <div className="flex flex-col items-center space-y-2">
+                    <div className="text-4xl animate-bounce">⚔️👑🐉</div>
+                    <div className="text-sm font-extrabold text-amber-300 tracking-wide">王道ファンタジーRPG『ピクセル・サーガ』</div>
+                    <div className="text-[11px] text-slate-300 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-800">
+                      🎁 今なら新規ログインで「ダイヤ3000個」進呈中！
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center space-y-2 animate-fade-in">
+                    <div className="text-4xl animate-pulse">💎🕊️✨</div>
+                    <div className="text-sm font-extrabold text-sky-300 tracking-wide">空のパズル大冒険『スカイ・ジュエル』</div>
+                    <div className="text-[11px] text-slate-300 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-800">
+                      ⚡ 伝説の翼を手に入れ、未知の大空へ旅立とう！
+                    </div>
+                  </div>
+                )}
+
                 {/* Progress bar */}
-                <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+                <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden border border-slate-700 mt-5 mb-1.5">
                   <div 
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 h-full transition-all duration-300"
+                    className="bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 h-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
-                <span className="text-[10px] text-slate-400">※プレビュー環境のため模擬動画（4秒）で高速スキップ検証中</span>
+                <span className="text-[10px] text-slate-400">模擬動画スポンサーバナーを高速プレビュー再生中</span>
               </div>
             )}
           </div>
         ) : (
-          <div className="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-4 mb-6 text-left text-xs space-y-1.5">
-            <div className="flex items-center justify-between text-amber-400 font-bold font-mono border-b border-slate-800 pb-1">
-              <span>Google AdMob 組み込み完了</span>
-              <span className="bg-emerald-500/20 text-emerald-400 text-[10px] px-1.5 py-0.5 rounded border border-emerald-500/40">ACTIVE</span>
+          <div className="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-4 mb-6 text-left text-xs space-y-2">
+            <div className="flex items-center justify-between text-amber-400 font-bold font-mono border-b border-slate-800 pb-1.5">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Google AdMob ユニット設定済
+              </span>
+              <span className="bg-sky-500/20 text-sky-300 text-[10px] px-2 py-0.5 rounded border border-sky-500/40 font-sans font-bold">
+                Webプレビュー動作中
+              </span>
             </div>
-            <p className="text-[11px] text-slate-300 leading-relaxed break-all font-mono">
-              App ID: <span className="text-slate-100">ca-app-pub-1236266345379353~7880489433</span>
-            </p>
-            <p className="text-[11px] text-amber-300 leading-relaxed break-all font-mono">
-              Ad Unit ID: <span className="text-white font-bold">ca-app-pub-1236266345379353/3007436707</span>
-            </p>
-            <p className="text-[10px] text-slate-400">
-              💡 ストア配信時（PWABuilder / Capacitor等）は自動で実広告がリクエストされます。AI Studio環境では安全な模擬テスト枠が作動します。
-            </p>
+            <div className="bg-slate-900/90 p-2.5 rounded-lg border border-slate-800 space-y-1 font-mono text-[11px]">
+              <p className="text-slate-300 break-all">
+                App ID: <span className="text-slate-100 font-semibold">ca-app-pub-1236266345379353~7880489433</span>
+              </p>
+              <p className="text-amber-300 break-all">
+                Unit ID: <span className="text-white font-bold">ca-app-pub-1236266345379353/3007436707</span>
+              </p>
+            </div>
+            <div className="text-[11px] text-slate-300 space-y-1 leading-relaxed bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-lg font-sans">
+              <p className="font-bold text-amber-300">💡 なぜ今は本物の広告が出ないの？</p>
+              <p>
+                Google AdMobは<strong className="text-white">「スマホアプリ（Android / iOS）」専用の仕様</strong>となっています。現在のWebブラウザ（AI StudioやGitHub Pages）上でテスト中の間は安全な【模擬動画シミュレーター】が作動します。
+              </p>
+              <p className="text-slate-400 text-[10px] pt-0.5">
+                ※PWABuilderやCapacitor等でAndroidアプリ（.apk）化してスマホにインストールすると、上記IDの実広告動画が自動配信されます。
+              </p>
+            </div>
           </div>
         )}
 

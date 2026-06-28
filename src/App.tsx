@@ -17,6 +17,7 @@ export default function App() {
   const [currentScore, setCurrentScore] = useState<number>(0);
   const [runGems, setRunGems] = useState<number>(0);
   const [hasUsedAdRetry, setHasUsedAdRetry] = useState<boolean>(false);
+  const [isContinuing, setIsContinuing] = useState<boolean>(false);
   
   // Modals
   const [activeModal, setActiveModal] = useState<'shop' | 'ranking' | 'ad_retry' | 'ad_gems' | 'release_guide' | null>(null);
@@ -57,6 +58,7 @@ export default function App() {
 
   const handleStartGame = useCallback(() => {
     setGameState('playing');
+    setIsContinuing(false);
     setCurrentScore(0);
     setRunGems(0);
     setHasUsedAdRetry(false);
@@ -67,6 +69,7 @@ export default function App() {
 
   const handleGoHome = useCallback(() => {
     setGameState('home');
+    setIsContinuing(false);
     setActiveModal(null);
   }, []);
 
@@ -81,6 +84,7 @@ export default function App() {
 
   const handleGameOver = useCallback(() => {
     setGameState('gameover');
+    setIsContinuing(false);
     setProfile(prev => {
       // Every 3 score points also give 1 gem
       const scoreBonus = Math.floor(currentScore / 3);
@@ -97,6 +101,7 @@ export default function App() {
 
   const handleRetry = useCallback(() => {
     setGameState('playing');
+    setIsContinuing(false);
     setCurrentScore(0);
     setRunGems(0);
     setHasUsedAdRetry(false);
@@ -160,6 +165,7 @@ export default function App() {
     if (activeModal === 'ad_retry') {
       setHasUsedAdRetry(true);
       setActiveModal(null);
+      setIsContinuing(true);
       setGameState('playing'); // Resume playing from current score
     } else if (activeModal === 'ad_gems') {
       setProfile(prev => ({ ...prev, gems: prev.gems + 15 }));
@@ -186,6 +192,7 @@ export default function App() {
           character={activeChar}
           equippedEffect={activeEq.effectType}
           gameState={gameState}
+          isContinuing={isContinuing}
           onScoreUpdate={handleScoreUpdate}
           onCoinCollect={handleCoinCollect}
           onGameOver={handleGameOver}
@@ -237,7 +244,6 @@ export default function App() {
           onWatchAdRetry={() => setActiveModal('ad_retry')}
           onOpenRanking={() => setActiveModal('ranking')}
           onOpenShop={() => setActiveModal('shop')}
-          onOpenReleaseGuide={() => setActiveModal('release_guide')}
           onGoHome={handleGoHome}
         />
       )}

@@ -7,6 +7,7 @@ interface GameCanvasProps {
   character: Character;
   equippedEffect: string;
   gameState: 'home' | 'playing' | 'gameover' | 'paused';
+  isContinuing?: boolean;
   onScoreUpdate: (score: number) => void;
   onCoinCollect: (coinBonus: number) => void;
   onGameOver: () => void;
@@ -17,6 +18,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   character,
   equippedEffect,
   gameState,
+  isContinuing,
   onScoreUpdate,
   onCoinCollect,
   onGameOver,
@@ -362,9 +364,17 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   // When reset trigger happens
   useEffect(() => {
     if (gameState === 'playing' && canvasRef.current) {
-      resetPhysics(canvasRef.current.height);
+      if (isContinuing) {
+        // コンティニュー復活！スコアは保持し、鳥の位置を中央へ安全に復帰
+        stateRef.current.y = canvasRef.current.height / 2;
+        stateRef.current.vy = -5.0; // 軽快にジャンプして再スタート
+        stateRef.current.isDead = false;
+        stateRef.current.obstacles = []; // 目の前の障害物をクリアして安全地帯を確保
+      } else {
+        resetPhysics(canvasRef.current.height);
+      }
     }
-  }, [gameState, resetPhysics]);
+  }, [gameState, isContinuing, resetPhysics]);
 
   return (
     <div 
